@@ -16,4 +16,5 @@
 
 package llvm
 
-var _ run_build_sh
+// commented out to enable go run
+//var _ run_build_sh
