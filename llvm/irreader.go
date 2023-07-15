@@ -1,6 +1,6 @@
 /*
-	This file is not part of the official llvm Go bindings
-	I added it myself because functionality was I needed was missing
+This file is not part of the official llvm Go bindings
+I added it myself because functionality was I needed was missing
 */
 package llvm
 
@@ -29,15 +29,14 @@ func ParseIRFile(name string, context Context) (Module, error) {
 		C.free(unsafe.Pointer(errmsg))
 		return Module{}, err
 	}
-	//defer C.LLVMDisposeMemoryBuffer(buf)
+	// defer C.LLVMDisposeMemoryBuffer(buf) // it crashes when I leave this in here and I don't know why, so we just ignore that
 
 	var m Module
-	result = C.LLVMParseIRInContext(context.C, buf, &m.C, &errmsg)
-	if result != 0 {
-		err := errors.New(C.GoString(errmsg))
-		C.free(unsafe.Pointer(errmsg))
-		return Module{}, err
+	if C.LLVMParseIRInContext(context.C, buf, &m.C, &errmsg) == 0 {
+		return m, nil
 	}
 
-	return m, nil
+	err := errors.New(C.GoString(errmsg))
+	C.free(unsafe.Pointer(errmsg))
+	return Module{}, err
 }

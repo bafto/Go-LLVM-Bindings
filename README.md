@@ -9,3 +9,5 @@ I may extend this module in the future.
 To build a project which uses this module you should use the provided build.sh file.
 It sets up some environment variables for the cgo bindings.
 You need to have llvm-config.exe in your PATH (or modify build.sh to point to your local llvm-config.exe)
+
+You can use open.sh in the same way to open the project in VSCode without getting cgo include errors.
