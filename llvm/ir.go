@@ -1974,6 +1974,15 @@ func NewMemoryBufferFromStdin() (b MemoryBuffer, err error) {
 	return
 }
 
+func NewMemoryBufferFromRange(data []byte) MemoryBuffer {
+	cData := (*C.char)(unsafe.Pointer(&data[0]))
+	cDataLen := C.size_t(len(data))
+	name := C.CString("")
+	buff := C.LLVMCreateMemoryBufferWithMemoryRange(cData, cDataLen, name, 0)
+	C.free(unsafe.Pointer(name))
+	return MemoryBuffer{C: buff}
+}
+
 func (b MemoryBuffer) Bytes() []byte {
 	cstart := C.LLVMGetBufferStart(b.C)
 	csize := C.LLVMGetBufferSize(b.C)

@@ -40,3 +40,19 @@ func ParseIRFile(name string, context Context) (Module, error) {
 	C.free(unsafe.Pointer(errmsg))
 	return Module{}, err
 }
+
+// parses the LLVM IR (textual) from the given memory buffer
+// the resulting module takes ownership of the passed buffer
+// meaning that you should not dispose it
+func ParseIRFromMemoryBuffer(buf MemoryBuffer, context Context) (Module, error) {
+	var errmsg *C.char
+
+	var m Module
+	if C.LLVMParseIRInContext(context.C, buf.C, &m.C, &errmsg) == 0 {
+		return m, nil
+	}
+
+	err := errors.New(C.GoString(errmsg))
+	C.free(unsafe.Pointer(errmsg))
+	return Module{}, err
+}
